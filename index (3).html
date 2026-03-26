@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Byte Generator — CloudLinux</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+  .app{max-width:640px;margin:0 auto;padding:20px 16px 32px}
+  .hdr{text-align:center;margin-bottom:24px;padding:20px 0 16px;border-bottom:1px solid #1e293b}
+  .hdr h1{font-size:20px;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.3px}
+  .hdr p{font-size:11px;color:#64748b;margin-top:4px}
+  .tabs{display:flex;gap:2px;background:#1e293b;border-radius:10px;padding:3px;margin-bottom:20px}
+  .tb{flex:1;font-family:inherit;font-size:12px;font-weight:600;color:#64748b;background:none;border:none;padding:9px 8px;border-radius:8px;cursor:pointer;transition:.2s}
+  .tb.on{color:#f1f5f9;background:#334155;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+  .panel{display:none}.panel.on{display:block}
+  .sec{margin-bottom:20px}
+  .sec-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .dot-blue{background:#38bdf8}.dot-orange{background:#fb923c}.dot-purple{background:#a78bfa}.dot-green{background:#34d399}
+  .sec-title{font-size:13px;font-weight:700;color:#f1f5f9;letter-spacing:-.2px}
+  .lbl{font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+  input.f,textarea.f{width:100%;font-family:inherit;font-size:13px;padding:9px 12px;background:#1e293b;border:1.5px solid #334155;border-radius:8px;color:#e2e8f0;outline:none;transition:border .2s;resize:vertical}
+  input.f:focus,textarea.f:focus{border-color:#38bdf8}
+  input.f::placeholder,textarea.f::placeholder{color:#475569}
+  .row{display:grid;gap:8px;margin-bottom:8px}.r2{grid-template-columns:1fr 1fr}.r3{grid-template-columns:1fr 1fr 1fr}.rk{grid-template-columns:160px 1fr}
+  .actions{display:flex;gap:8px;margin-top:16px}
+  .btn{font-family:inherit;font-size:12px;font-weight:700;border:none;border-radius:8px;padding:10px 20px;cursor:pointer;transition:.15s}
+  .btn-p{color:#0f172a;background:linear-gradient(135deg,#38bdf8,#818cf8)}.btn-p:hover{opacity:.9}
+  .btn-s{color:#38bdf8;background:none;border:1.5px solid #334155}.btn-s:hover{border-color:#38bdf8}
+  .out-block{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px 16px;margin-bottom:12px;position:relative}
+  .out-label{font-size:10px;font-weight:700;color:#38bdf8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .out-text{font-size:13px;line-height:1.65;color:#cbd5e1;white-space:pre-wrap}
+  .out-text strong{color:#f1f5f9}
+  .cp-btn{position:absolute;top:12px;right:12px;font-family:inherit;font-size:10px;font-weight:700;color:#38bdf8;background:#0f172a;border:1px solid #334155;border-radius:5px;padding:4px 10px;cursor:pointer;transition:.2s}
+  .cp-btn.ok{color:#0f172a;background:#38bdf8;border-color:#38bdf8}
+  .back{font-size:11px;color:#64748b;background:none;border:none;cursor:pointer;margin-bottom:14px}.back:hover{color:#94a3b8}
+  .empty{text-align:center;padding:32px 16px;color:#475569;font-size:13px}
+  .foot{text-align:center;margin-top:20px;font-size:10px;color:#475569}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hdr">
+    <h1>⚡ Weekly Byte Generator</h1>
+    <p>CloudLinux People Team — AI-Powered Automation</p>
+  </div>
+  <div class="tabs">
+    <button class="tb on" data-t="edit" onclick="go('edit')">📝 Input</button>
+    <button class="tb" data-t="canva" onclick="go('canva')">🎨 Canva Texts</button>
+    <button class="tb" data-t="slack" onclick="go('slack')">💬 Slack Post</button>
+  </div>
+  <div id="p-edit" class="panel on">
+    <div class="row r2" style="margin-bottom:14px">
+      <div><div class="lbl">Episode #</div><input class="f" id="ep" placeholder=""></div>
+      <div><div class="lbl">Date</div><input class="f" id="dt"></div>
+    </div>
+    <div class="sec">
+      <div class="sec-hdr"><div class="dot dot-blue"></div><div class="sec-title">Meet the Team</div></div>
+      <div class="row r3">
+        <div><div class="lbl">Name</div><input class="f" id="nm" placeholder=""></div>
+        <div><div class="lbl">Role</div><input class="f" id="rl" placeholder=""></div>
+        <div><div class="lbl">Team</div><input class="f" id="tm" placeholder=""></div>
+      </div>
+      <div class="lbl" style="margin-top:4px">What are you currently working on?</div>
+      <textarea class="f" id="q0" rows="2" placeholder="Employee's answer..."></textarea>
+      <div style="height:6px"></div>
+      <div class="lbl">What achievement are you especially proud of?</div>
+      <textarea class="f" id="q1" rows="2" placeholder=""></textarea>
+      <div style="height:6px"></div>
+      <div class="lbl">Do you have a guilty pleasure in coding?</div>
+      <textarea class="f" id="q2" rows="2" placeholder=""></textarea>
+      <div style="height:6px"></div>
+      <div class="lbl">How did you get into engineering?</div>
+      <textarea class="f" id="q3" rows="2" placeholder=""></textarea>
+      <div style="height:6px"></div>
+      <div class="lbl">How do you recharge outside of work?</div>
+      <textarea class="f" id="q4" rows="2" placeholder=""></textarea>
+      <div style="height:6px"></div>
+      <div class="lbl">If you could instantly master any skill what would it be?</div>
+      <textarea class="f" id="q5" rows="1" placeholder=""></textarea>
+      <div style="height:6px"></div>
+      <div class="lbl">What's your dream travel destination?</div>
+      <textarea class="f" id="q6" rows="1" placeholder=""></textarea>
+    </div>
+    <div class="sec">
+      <div class="sec-hdr"><div class="dot dot-orange"></div><div class="sec-title">Kudos of the Week</div></div>
+      <div class="row rk"><input class="f" id="k0n" placeholder="Name"><input class="f" id="k0t" placeholder="for his great work on..."></div>
+      <div class="row rk"><input class="f" id="k1n" placeholder="Name"><input class="f" id="k1t" placeholder="for her dedication to..."></div>
+      <div class="row rk"><input class="f" id="k2n" placeholder="Name"><input class="f" id="k2t" placeholder="for leading..."></div>
+      <div class="row rk"><input class="f" id="k3n" placeholder="Name"><input class="f" id="k3t" placeholder="for outstanding..."></div>
+    </div>
+    <div class="sec">
+      <div class="sec-hdr"><div class="dot dot-purple"></div><div class="sec-title">Tech Pulse</div></div>
+      <div class="lbl">Headline</div>
+      <input class="f" id="tph" placeholder="">
+      <div style="height:6px"></div>
+      <div class="lbl">Body</div>
+      <textarea class="f" id="tpb" rows="3" placeholder=""></textarea>
+    </div>
+    <div class="sec">
+      <div class="sec-hdr"><div class="dot dot-green"></div><div class="sec-title">Wellness Tip <span style="font-weight:400;color:#64748b;font-size:10px">(optional)</span></div></div>
+      <div class="lbl">Headline</div>
+      <input class="f" id="wth" placeholder="">
+      <div style="height:6px"></div>
+      <div class="lbl">Body</div>
+      <textarea class="f" id="wtb" rows="2" placeholder=""></textarea>
+    </div>
+    <div class="actions">
+      <button class="btn btn-p" onclick="go('canva')">🎨 Generate Canva Texts</button>
+      <button class="btn btn-s" onclick="go('slack')">💬 Slack Post</button>
+    </div>
+  </div>
+  <div id="p-canva" class="panel">
+    <button class="back" onclick="go('edit')">← Back to editing</button>
+    <div id="canva-out"></div>
+  </div>
+  <div id="p-slack" class="panel">
+    <button class="back" onclick="go('edit')">← Back to editing</button>
+    <div class="out-block">
+      <div class="out-label">Ready-to-post Slack message</div>
+      <button class="cp-btn" id="cpb" onclick="cpSlack()">📋 Copy</button>
+      <div class="out-text" id="sout"></div>
+    </div>
+  </div>
+  <div class="foot">Weekly Byte Generator v2 · CloudLinux People Team</div>
+</div>
+<script>
+const QS=["What are you currently working on?","What achievement are you especially proud of?","Do you have a guilty pleasure in coding?","How did you get into engineering?","How do you recharge outside of work?","If you could instantly master any skill what would it be?","What's your dream travel destination?"];
+(function(){const d=new Date(),m=["January","February","March","April","May","June","July","August","September","October","November","December"];document.getElementById("dt").value=d.getDate()+" "+m[d.getMonth()]+", "+d.getFullYear()})();
+function v(id){return(document.getElementById(id)?.value||"").trim()}
+function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML}
+function gk(){const o=[];for(let i=0;i<4;i++){const n=v("k"+i+"n"),t=v("k"+i+"t");if(n&&t)o.push({n,t})}return o}
+function ga(){return QS.map((_,i)=>v("q"+i))}
+function go(id){["edit","canva","slack"].forEach(t=>{document.getElementById("p-"+t).classList.toggle("on",t===id);document.querySelector('[data-t="'+t+'"]').classList.toggle("on",t===id)});if(id==="canva")rCanva();if(id==="slack")rSlack()}
+function rCanva(){const nm=v("nm"),rl=v("rl"),tm=v("tm"),ans=ga(),kd=gk();const tph=v("tph"),tpb=v("tpb"),wth=v("wth"),wtb=v("wtb");let html="";if(nm||ans.some(a=>a)){let mt="";if(nm)mt+=`<strong>${esc(nm).toUpperCase()}</strong>\n<strong>${esc(rl).toUpperCase()}</strong>${tm?"\n<strong>"+esc(tm).toUpperCase()+"</strong>":""}\n\n`;QS.forEach((q,i)=>{if(ans[i])mt+=`<strong>${esc(q)}</strong>\n${esc(ans[i])}\n\n`});html+=block("MEET THE TEAM","meet-"+Date.now(),mt.trim())}if(kd.length){let kt="";kd.forEach(k=>{kt+=`🎉 Shoutout to <strong>${esc(k.n)}</strong> ${esc(k.t)}\n\n`});html+=block("🙌 KUDOS OF THE WEEK","kudos-"+Date.now(),kt.trim())}if(tph){html+=block("🚀 TECH PULSE","tech-"+Date.now(),`<strong>${esc(tph)}</strong>\n\n${esc(tpb)}`)}if(wth){html+=block("🧘 WELLNESS TIP","well-"+Date.now(),`<strong>${esc(wth)}</strong>\n\n${esc(wtb)}`)}if(!html)html='<div class="empty">Fill in the data first, then come back here</div>';document.getElementById("canva-out").innerHTML=html}
+function block(title,id,content){return`<div class="out-block"><div class="out-label">${title}</div><button class="cp-btn" onclick="cpBlock('${id}')">📋 Copy</button><div class="out-text" id="${id}">${content}</div></div>`}
+function cpBlock(id){const el=document.getElementById(id);const text=el.innerText||el.textContent;navigator.clipboard.writeText(text);const btn=el.parentElement.querySelector('.cp-btn');btn.textContent="✓ Copied!";btn.classList.add("ok");setTimeout(()=>{btn.textContent="📋 Copy";btn.classList.remove("ok")},1500)}
+function mkSlack(){const nm=v("nm"),rl=v("rl"),tm=v("tm"),ep=v("ep"),ans=ga(),kd=gk();const tph=v("tph"),tpb=v("tpb"),wth=v("wth"),wtb=v("wtb");const p=[];if(ans[0])p.push("is currently working on "+ans[0].replace(/^(I am |I'm |We are |We're )/i,"").toLowerCase());if(ans[1])p.push("is especially proud of "+ans[1].replace(/^(I am |I'm |I was )/i,"").toLowerCase());if(ans[6])p.push("would love to visit "+ans[6]+" one day");let mt="";if(nm){mt="*Meet the Team* - say hi to @"+nm+", "+rl+(tm?" from the "+tm:"")+"!";if(p.length){const j=p.join(", ");mt+=" "+j.charAt(0).toUpperCase()+j.slice(1)+"."}}let kt="";if(kd.length){kt="\n\n*Kudos of the Week* 🎉\n"+kd.map(k=>"• Shoutout to *"+k.n+"* — "+k.t).join("\n")}const tp=tph?"\n\n*Tech Pulse* - "+tph+"\n"+tpb:"";const wt=wth?"\n\n*Wellness Tip* - "+wth+". "+wtb:"";return"Happy Friday, everyone! 🎉\n\nHere's your fresh scoop from the Weekly Byte"+(ep?" Ep. "+ep:"")+"!\n\n"+mt+kt+tp+wt+"\n\nWishing you a relaxing weekend and a great end to the week! 🌟"}
+function rSlack(){document.getElementById("sout").textContent=mkSlack()}
+function cpSlack(){navigator.clipboard.writeText(mkSlack());const b=document.getElementById("cpb");b.textContent="✓ Copied!";b.classList.add("ok");setTimeout(()=>{b.textContent="📋 Copy";b.classList.remove("ok")},1500)}
+</script>
+</body>
+</html>
